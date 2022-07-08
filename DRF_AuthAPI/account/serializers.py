@@ -1,4 +1,5 @@
 from asyncore import write
+from dataclasses import fields
 from pyexpat import model
 from rest_framework import serializers
 from account.models import User
@@ -25,3 +26,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def create(self, validate_data):
         return User.objects.create_user(**validate_data)
 
+
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    email=serializers.CharField(max_length=255)
+    class Meta:
+        model=User
+        fields=['email', 'password']
