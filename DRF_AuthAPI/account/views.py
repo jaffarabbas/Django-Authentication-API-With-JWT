@@ -2,7 +2,7 @@ from turtle import st
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from account.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer
+from account.serializers import UserRegistrationSerializer,UserLoginSerializer,UserProfileSerializer,UserChangePassowordSerializer
 from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -47,3 +47,13 @@ class UserProfileView(APIView):
     def get(self, request, format=None):
         serializers = UserProfileSerializer(request.user)
         return Response(serializers.data,status = status.HTTP_200_OK)
+
+
+class UserChangePassowrdView(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        serializers = UserChangePassowordSerializer(data=request.data,context={'user':request.user})
+        if serializers.is_valid(raise_exception=True):
+           return Response({'msg':'Passowrd Changed successfully'},status = status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
